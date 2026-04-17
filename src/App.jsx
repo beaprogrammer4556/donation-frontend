@@ -23,7 +23,7 @@ function App() {
 
     setLoading(true);
 
-  const upiLink = `upi://pay?pa=${encodeURIComponent("boism-8910885661@boi")}&pn=${encodeURIComponent("WavesOfLife")}&am=${amount}&cu=INR`;
+   const upiLink = `upi://pay?pa=${encodeURIComponent("9051420053@ybl")}&pn=${encodeURIComponent("Saikat")}&am=${amount}&cu=INR`;
   
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/api/donate`, {
