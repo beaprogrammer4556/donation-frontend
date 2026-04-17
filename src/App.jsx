@@ -24,7 +24,7 @@ function App() {
     setLoading(true);
 
   const upiLink = `upi://pay?pa=${encodeURIComponent("Vyapar.172928190868@hdfcbank")}&pn=${encodeURIComponent("WavesOfLife")}&am=${amount}&cu=INR`;
-
+  
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/api/donate`, {
         method: "POST",
@@ -43,7 +43,7 @@ function App() {
 
       if (res.ok) {
         setSaved(true);
-        setUpiLink(link);
+        setUpiLink(upiLink);
       } else {
         alert(data.message || "Failed to save data");
       }
