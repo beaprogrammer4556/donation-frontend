@@ -23,7 +23,7 @@ function App() {
 
     setLoading(true);
 
-    const link = `upi://pay?pa=Vyapar.172928190868@hdfcbank&pn=WavesOfLife&am=${amount}&cu=INR&tn=${phone}`;
+  const upiLink = `upi://pay?pa=${encodeURIComponent("Vyapar.172928190868@hdfcbank")}&pn=${encodeURIComponent("WavesOfLife")}&am=${amount}&cu=INR`;
 
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/api/donate`, {
