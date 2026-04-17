@@ -207,16 +207,17 @@ form {
 }
 
 .card-footer {
-  margin-top: 22px;
-  padding-top: 14px;
+  margin-top: 24px;
+  padding-top: 16px;
   border-top: 1px solid rgba(255,255,255,0.15);
 
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 
-  font-size: 0.85rem;
+  font-size: 0.95rem; /* increased */
+  font-weight: 500;
 }
 
 .card-footer a {
@@ -224,20 +225,27 @@ form {
   align-items: center;
   gap: 6px;
 
-  color: rgba(255,255,255,0.85);
+  color: rgba(255,255,255,0.95);
   text-decoration: none;
   transition: 0.25s ease;
 }
 
 .card-footer a:hover {
   color: #00eaff;
-  text-shadow: 0 0 10px rgba(0,200,255,0.5);
+  text-shadow: 0 0 10px rgba(0,200,255,0.6);
+}
+
+.card-footer .icon {
+  font-size: 1.1rem;
 }
 
 @media (max-width: 480px) {
   .card-footer {
-    font-size: 0.75rem;
-    gap: 6px;
+    font-size: 0.85rem; /* not too small anymore */
+  }
+
+  .card-footer .icon {
+    font-size: 1rem;
   }
 }
 

@@ -125,14 +125,16 @@ function App() {
         </form>
 
         <div className="card-footer">
-          <a href="tel:9836440133">
-            📞 9836440133
-          </a>
-          <a href="https://wavesoflife.org.in/" target="_blank">
-            🌐 wavesoflife.org.in
-          </a>
-        </div>
+        <a href="tel:9836440133">
+        <span className="icon">📞</span>
+          9836440133
+        </a>
 
+      <a href="https://wavesoflife.org.in/" target="_blank">
+      <span className="icon">🌐</span>
+        wavesoflife.org.in
+      </a>
+</div>
       </div>
     </div>
   );
