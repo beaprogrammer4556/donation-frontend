@@ -23,8 +23,8 @@ function App() {
 
     setLoading(true);
 
-   const upiLink = `upi://pay?pa=${encodeURIComponent("9051420053@ybl")}&pn=${encodeURIComponent("Saikat")}&am=${amount}&cu=INR`;
-  
+    const upiLink = `upi://pay?pa=${encodeURIComponent("boism-8910885661@ybl")}&pn=${encodeURIComponent("WavesOfLife")}&am=${amount}&cu=INR`;
+
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/api/donate`, {
         method: "POST",
@@ -67,11 +67,9 @@ function App() {
     <div className="app-container">
       <div className="donation-card">
 
-        <img
-          src={logo}
-          alt="logo"
-          className="card-logo"
-        />
+        <div className="logo-wrapper">
+          <img src={logo} alt="logo" />
+        </div>
 
         <div className="card-header">
           <h2>Donate ❤️</h2>
@@ -79,7 +77,6 @@ function App() {
         </div>
 
         <form onSubmit={(e) => e.preventDefault()}>
-
           <div className="input-group">
             <input
               type="text"
@@ -125,8 +122,17 @@ function App() {
               ? "Proceed to Pay"
               : "Submit & Continue"}
           </button>
-
         </form>
+
+        <div className="card-footer">
+          <a href="tel:9836440133">
+            📞 9836440133
+          </a>
+          <a href="https://wavesoflife.org.in/" target="_blank">
+            🌐 wavesoflife.org.in
+          </a>
+        </div>
+
       </div>
     </div>
   );
