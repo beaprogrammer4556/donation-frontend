@@ -1,5 +1,5 @@
 import { useState } from "react";
-import logo from "./assets/logo.jpg"
+import logo from "./assets/logo.jpg";
 import "./App.css";
 
 function App() {
@@ -9,12 +9,23 @@ function App() {
     amount: ""
   });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const [saved, setSaved] = useState(false);
+  const [upiLink, setUpiLink] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async () => {
+    const { name, phone, amount } = form;
+
+    if (!name || !phone || !amount) {
+      alert("Please fill all fields");
+      return;
+    }
+
+    setLoading(true);
+
+    const link = `upi://pay?pa=Vyapar.172928190868@hdfcbank&pn=WavesOfLife&am=${amount}&cu=INR&tn=${phone}`;
 
     try {
-      console.log("Sending data:", form);
-
       const res = await fetch(`${import.meta.env.VITE_API_URL}/api/donate`, {
         method: "POST",
         headers: {
@@ -31,17 +42,24 @@ function App() {
       }
 
       if (res.ok) {
-        alert("Data saved! Redirecting to payment...");
-
-        const upiLink = `upi://pay?pa=Vyapar.172928190868@hdfcbank&pn=WavesOfLife&am=${form.amount}&cu=INR&tn=${form.phone}`;
-
-        window.location.href = upiLink;
+        setSaved(true);
+        setUpiLink(link);
       } else {
-        alert("Failed to save data");
+        alert(data.message || "Failed to save data");
       }
     } catch (err) {
       console.error("Error:", err);
       alert("Cannot connect to server");
+    }
+
+    setLoading(false);
+  };
+
+  const handleClick = () => {
+    if (!saved) {
+      handleSubmit();
+    } else {
+      window.location.href = upiLink;
     }
   };
 
@@ -50,18 +68,18 @@ function App() {
       <div className="donation-card">
 
         <img
-    src={logo}
-    alt="logo"
-    className="card-logo"
-  />
-        
+          src={logo}
+          alt="logo"
+          className="card-logo"
+        />
+
         <div className="card-header">
           <h2>Donate ❤️</h2>
           <p className="subtitle">Support Waves of Life</p>
         </div>
 
-        <form onSubmit={handleSubmit}>
-          
+        <form onSubmit={(e) => e.preventDefault()}>
+
           <div className="input-group">
             <input
               type="text"
@@ -69,6 +87,7 @@ function App() {
               required
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
+              disabled={saved}
             />
           </div>
 
@@ -79,6 +98,7 @@ function App() {
               required
               value={form.phone}
               onChange={(e) => setForm({ ...form, phone: e.target.value })}
+              disabled={saved}
             />
           </div>
 
@@ -89,11 +109,21 @@ function App() {
               required
               value={form.amount}
               onChange={(e) => setForm({ ...form, amount: e.target.value })}
+              disabled={saved}
             />
           </div>
 
-          <button type="submit" className="submit-btn">
-            Proceed to Pay
+          <button
+            type="button"
+            className="submit-btn"
+            onClick={handleClick}
+            disabled={loading}
+          >
+            {loading
+              ? "Processing..."
+              : saved
+              ? "Proceed to Pay"
+              : "Submit & Continue"}
           </button>
 
         </form>
