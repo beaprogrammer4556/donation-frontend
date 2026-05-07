@@ -3,68 +3,98 @@ import logo from "./assets/logo.jpg";
 import "./App.css";
 
 function App() {
+
   const [form, setForm] = useState({
     name: "",
     phone: "",
     amount: ""
   });
 
-  const [saved, setSaved] = useState(false);
-  const [upiLink, setUpiLink] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async () => {
-    const { name, phone, amount } = form;
 
-    if (!name || !phone || !amount) {
-      alert("Please fill all fields");
-      return;
-    }
+  const { name, phone, amount } = form;
 
-    setLoading(true);
+  if (!name || !phone || !amount) {
+    alert("Please fill all fields");
+    return;
+  }
 
-    const upiLink = `upi://pay?pa=${encodeURIComponent("boism-8910885661@ybl")}&pn=${encodeURIComponent("WavesOfLife")}&am=${amount}&cu=INR`;
+  setLoading(true);
 
-    try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/donate`, {
+  try {
+
+    const res = await fetch(
+      `${import.meta.env.VITE_API_URL}/api/payment`,
+      {
         method: "POST",
+
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify(form)
-      });
 
-      let data;
-      try {
-        data = await res.json();
-      } catch {
-        data = { message: "Invalid response" };
+        body: JSON.stringify({
+          ...form,
+          employeeCode: "GENERAL"
+        })
       }
+    );
 
-      if (res.ok) {
-        setSaved(true);
-        setUpiLink(upiLink);
-      } else {
-        alert(data.message || "Failed to save data");
-      }
-    } catch (err) {
-      console.error("Error:", err);
-      alert("Cannot connect to server");
+    const data = await res.json();
+
+    if (!res.ok) {
+
+      alert(data.message || "Payment failed");
+
+      setLoading(false);
+
+      return;
     }
+
+    const formHTML = `
+      <form id="ccavenueForm"
+        method="post"
+        action="https://secure.ccavenue.com/transaction/transaction.do?command=initiateTransaction">
+
+        <input
+          type="hidden"
+          name="encRequest"
+          value="${data.encryptedData}" />
+
+        <input
+          type="hidden"
+          name="access_code"
+          value="${data.accessCode}" />
+
+      </form>
+    `;
+
+    const div = document.createElement("div");
+
+    div.innerHTML = formHTML;
+
+    document.body.appendChild(div);
+
+    document
+      .getElementById("ccavenueForm")
+      .submit();
+
+  } catch (err) {
+
+    console.log(err);
+
+    alert("Cannot connect to server");
+
+  } finally {
 
     setLoading(false);
-  };
-
-  const handleClick = () => {
-    if (!saved) {
-      handleSubmit();
-    } else {
-      window.location.href = upiLink;
-    }
-  };
+  }
+};
 
   return (
     <div className="app-container">
+
       <div className="donation-card">
 
         <div className="logo-wrapper">
@@ -73,18 +103,25 @@ function App() {
 
         <div className="card-header">
           <h2>Donate ❤️</h2>
-          <p className="subtitle">Support Waves of Life</p>
+          <p className="subtitle">
+            Support Waves of Life
+          </p>
         </div>
 
         <form onSubmit={(e) => e.preventDefault()}>
+
           <div className="input-group">
             <input
               type="text"
               placeholder="Your Name"
               required
               value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-              disabled={saved}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  name: e.target.value
+                })
+              }
             />
           </div>
 
@@ -94,8 +131,12 @@ function App() {
               placeholder="Phone Number"
               required
               value={form.phone}
-              onChange={(e) => setForm({ ...form, phone: e.target.value })}
-              disabled={saved}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  phone: e.target.value
+                })
+              }
             />
           </div>
 
@@ -105,37 +146,50 @@ function App() {
               placeholder="Amount (₹)"
               required
               value={form.amount}
-              onChange={(e) => setForm({ ...form, amount: e.target.value })}
-              disabled={saved}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  amount: e.target.value
+                })
+              }
             />
           </div>
 
-          <button
-            type="button"
-            className="submit-btn"
-            onClick={handleClick}
-            disabled={loading}
-          >
-            {loading
-              ? "Processing..."
-              : saved
-              ? "Proceed to Pay"
-              : "Submit & Continue"}
-          </button>
+         <button
+      type="button"
+      className="submit-btn"
+      onClick={handleSubmit}
+     disabled={loading}
+    >
+      {
+        loading
+          ? "Processing..."
+          : "Submit & Pay"
+      }
+    </button>
+
         </form>
 
         <div className="card-footer">
-        <a href="tel:9836440133">
-        <span className="icon">📞</span>
-          9836440133
-        </a>
 
-      <a href="https://wavesoflife.org.in/" target="_blank">
-      <span className="icon">🌐</span>
-        wavesoflife.org.in
-      </a>
-</div>
+          <a href="tel:9836440133">
+            <span className="icon">📞</span>
+            9836440133
+          </a>
+
+          <a
+            href="https://wavesoflife.org.in/"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <span className="icon">🌐</span>
+            wavesoflife.org.in
+          </a>
+
+        </div>
+
       </div>
+
     </div>
   );
 }
